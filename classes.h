@@ -29,15 +29,20 @@ public:
     void write_into_data_file(ostream& out) const {
         out.write(reinterpret_cast<const char*>(&id), sizeof(id));  // Write the integer ID
         out.write(name, sizeof(name));  // Write the fixed length name
-        /***TO_DO***/ // do the same thing for bio and manager-id
 
+        /***TO_DO***/ // do the same thing for bio and manager-id
+        out.write(reinterpret_cast<const char*>(&manager_id), sizeof(manager_id)); 
+        out.write(bio, sizeof(bio));  // Write the fixed length bio
     }
 
     // Read data from a binary input stream, i.e., EmployeeRelation.dat file to populate an Employee object
     void read_from_data_file(istream& in) {
         in.read(reinterpret_cast<char*>(&id), sizeof(id));  // Read the integer ID
         in.read(name, sizeof(name));  // Read the fixed length name
+
         /***TO_DO***/ // do the same thing for bio and manager-id
+        in.read(reinterpret_cast<char*>(&manager_id), sizeof(manager_id));  // Read the integer ID
+        in.read(bio, sizeof(bio));  // Read the fixed length bio
 
     }
 
@@ -80,7 +85,26 @@ public:
         while (getline(csvFile, line)) {
             
             /***TO_DO***/ 
-            // Parse id, name, bio and manager-id from line, to create the Employee object below 
+            // Parse id, name, bio and manager-id from line, to create the Employee object below
+            // read data of line into ss as stringstream
+            stringstream ss(line); 
+
+            //parse data as string in format - id, name, bio and manager-id 
+            string str_id, name, bio, str_man_id;
+            long long id, manager_id;
+            getline(ss, str_id, ',');
+            getline(ss, name, ',');
+            getline(ss, bio, ',');
+            getline(ss, str_man_id, ',');
+
+            //convert string into int for id and manager id
+            id = stoll(str_id);
+            manager_id = stoll(str_man_id);
+
+            //check sizes of name and bio
+            if (name.size() > 200 || bio.size() > 500) {
+                throw runtime_error("Field size exceeded");
+            }
 
             Employee emp(id, name, bio, manager_id);  //create Employee objects
 
@@ -100,7 +124,21 @@ public:
         // Use [emp.read_from_data_file(data_file)] to read lines from the datafile 
         // until you find the id you are looking for or reach the end-of-file (eof) 
 
-       
+        //data_file.open(filename, ios::binary | ios::out | ios::in | ios::trunc);
+        int found = 0;
+        while(data_file.eof()){
+            emp.read_from_data_file(data_file);
+            if(searchId = emp.id){
+                cout << "============Employee information============\nId: " << emp.id << endl;
+            cout << "Name: " << emp.name << endl;
+            cout << "Manager ID: " << emp.manager_id << endl;
+            cout << "Bio:\n" << emp.bio << endl << endl; 
+                break;
+            }
+        }
         // Print not found message if no match
+        cout << "*******************************************" << endl;
+        cout << "\t\tEmployee not found" << endl;
+        cout << "*******************************************" << endl;
     }
 };
