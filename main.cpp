@@ -25,6 +25,10 @@ int main(int argc, char* argv[]) {
 
     // Searching for Employee IDs Using [manager.findAndPrintEmployee(id)]
     /***TO_DO***/ 
+    cout << "What Id would you like to search for?" << endl;
+    int searchId = -1;
+    cin >> searchId;
+    manager.findAndPrintEmployee(searchId);
 
     return 0;
 }
