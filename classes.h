@@ -129,7 +129,7 @@ public:
             
             emp.read_from_data_file(data_file);
             
-            if(searchId = emp.id){
+            if(searchId == emp.id){
                 cout << "============Employee information============\nId: " << emp.id << endl;
                 cout << "Name: " << emp.name << endl;
                 cout << "Manager ID: " << emp.manager_id << endl;
